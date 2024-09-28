@@ -1,8 +1,21 @@
-# React + Vite
+# Weather Forecast
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Preview](preview.png)
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Assignment made for Propacity frontend engineer position.
+
+[Visit](https://weather-forecast-delta-ten.vercel.app/)
+
+### Tech Stack
+
+React + Javascript + Vite + Tailwind
+
+### Thought process
+
+### Setting it up on local
+
+- Clone repo to local device
+- "npm install" to install the required node_modules
+- "npm run dev" to run the project on local
