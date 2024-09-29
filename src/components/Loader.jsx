@@ -1,7 +1,7 @@
 import { DotIcon } from "lucide-react";
-export default function Loader() {
+export default function Loader({ className = "" }) {
   return (
-    <div className="font-medium flex text-center">
+    <div className={`font-medium flex text-center ${className}`}>
       <DotIcon
         className="w-4 animate-updown"
         strokeWidth={7}

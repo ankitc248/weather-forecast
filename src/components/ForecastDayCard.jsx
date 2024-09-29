@@ -7,7 +7,7 @@ export default function ForecastDayCard({ forecastDataDay, delay = 0 }) {
   const currentDateDetails = formatEpochDate(forecastDataDay.EpochDate);
   return (
     <div
-      className="bg-white font-semibold items-center opacity-0 animate__animated animate__bounceInUp shadow-dark-down border-2 min-w-[300px] border-black rounded-xl flex flex-col p-3 pt-2 gap-3"
+      className="bg-white font-semibold items-center animate__animated animate__bounceInUp shadow-dark-down border-2 min-w-[300px] border-black rounded-xl flex flex-col p-3 pt-2 gap-3"
       style={{ animationDelay: `${delay}s` }}
     >
       <div className="text-left w-full p-1 flex flex-col justify-between items-start flex-wrap">

@@ -14,6 +14,7 @@ export default {
       },
       boxShadow: {
         dark: "2px 2px 0px 0px #000",
+        darkSmall: "1px 1px 0px 0px #000",
         light: "2px 2px 0px 0px #FFF",
         "dark-big": "4px 4px 0px 0px #000",
         "dark-down": "0px 2px 0px 0px #000",

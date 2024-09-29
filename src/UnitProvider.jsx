@@ -12,7 +12,7 @@ const UnitContext = createContext();
 export const UnitProvider = ({ children }) => {
   const [savedData, setSavedData] = useLocalStorage("wtw-saved-data-248", {});
   const [unit, setUnit] = useState(() => {
-    return savedData?.unit || "imperial";
+    return savedData?.unit || "metric";
   });
   const toggleUnit = useCallback(
     (newUnit) => {

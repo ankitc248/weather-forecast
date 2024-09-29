@@ -1169,7 +1169,7 @@ const citySearchData = [
     ],
   },
 ];
-const forecastData = {
+const forecastDummyData = {
   Headline: {
     EffectiveDate: "2024-09-22T19:00:00+05:30",
     EffectiveEpochDate: 1727011800,
@@ -3337,7 +3337,7 @@ const placeholderCities = [
 ];
 export {
   citySearchData,
-  forecastData,
+  forecastDummyData,
   citySearchQuery,
   weatherIconPairs,
   placeholderCities,

@@ -1,10 +1,17 @@
-import { weatherIconPairs } from "../../dummyData";
+import { currentData, weatherIconPairs } from "../../dummyData";
 import { formatEpochDate, capitalizeEachWord } from "../helpers/helpers";
 import CountUp from "react-countup";
 import UnitBlock from "./UnitBlock";
-import { SparklesIcon, WindIcon, Clock8Icon, CalendarFold } from "lucide-react";
+import {
+  SparklesIcon,
+  WindIcon,
+  Clock8Icon,
+  CalendarFold,
+  RotateCcwIcon,
+} from "lucide-react";
 import Loader from "./Loader";
 import { useEffect, useState } from "react";
+import { useMode } from "../ModeProvider";
 import {
   REACT_APP_WEATHER_API_KEY,
   REACT_APP_CURRENT_CONDITIONS_URL,
@@ -12,20 +19,42 @@ import {
 import useLocalStorage from "../localStorageHook";
 
 export default function CurrentCondition({ locationKey }) {
-  // const currentWeather = currentData[0];
+  const mode = useMode().mode;
   const [savedData, setSavedData] = useLocalStorage("wtw-saved-data-248", {});
-  const [weatherData, setWeatherData] = useState(null); // To store API results
+  const [weatherData, setWeatherData] = useState(
+    savedData.currentWeather ? savedData.currentWeather : null
+  ); // To store API results
   const [error, setError] = useState(null); // To store errors
   const [loading, setLoading] = useState(true); // Loading state
-
-  const fetchWeatherData = async (locationKey) => {
+  const fetchWeatherData = async (locationKey, refresh = false) => {
     setLoading(true);
     setError(null);
+    setSavedData({ ...savedData, currentWeatherCheckTime: Date.now() });
+    if (!refresh) {
+      if (savedData.fiveDayForecast) {
+        setTimeout(() => {
+          setWeatherData(savedData.currentWeather);
+          setLoading(false);
+        }, 0);
+        return;
+      }
+    }
+    if (mode === "testing") {
+      setTimeout(() => {
+        setWeatherData(currentData[0]);
+        setSavedData({
+          ...savedData,
+          currentWeather: currentData[0],
+          currentWeatherCheckTime: Date.now(),
+        });
+        setLoading(false);
+      }, 2000);
+      return;
+    }
 
     try {
       const apiKey = REACT_APP_WEATHER_API_KEY;
       const citySearchUrl = `${REACT_APP_CURRENT_CONDITIONS_URL}/${locationKey}?apikey=${apiKey}&details=true`;
-
       const init = {
         method: "GET",
         // cache: "no-store",
@@ -51,22 +80,53 @@ export default function CurrentCondition({ locationKey }) {
   }, []);
 
   return (
-    <div className="text-black font-medium flex flex-1 flex-col text-left xl:sticky top-2 h-full md:w-auto min-w-[300px]">
-      <h1 className="text-2xl font-semibold mb-2">Current weather</h1>
-      {loading && (
-        <div className="bg-white rounded-lg shadow-dark p-3 font-semibold border-2 border-black mb-4 flex items-center justify-between gap-2">
-          Getting current weather...
-          {loading && <Loader />}
+    <div className="text-black xl:self-start font-medium flex flex-1 flex-col text-left xl:sticky xl:top-2 md:w-auto min-w-[300px]">
+      <h1 className="text-2xl font-semibold mb-2 animate__animated animate__bounceInLeft flex gap-2 justify-between items-end relative">
+        <div className="flex gap-1 items-center">
+          <span>Current weather</span>
+          {savedData.currentWeatherCheckTime && (
+            <div className="relative hidden xl:flex items-center">
+              <span className="rounded-full z-20 select-none peer font-black border-[2px] shadow-darkSmall border-black w-5 h-5 bg-white text-sm flex items-center justify-center cursor-pointer">
+                i
+              </span>
+              <span className="absolute z-10 left-7 peer-[&:hover]:animate-swipeup peer-[&:hover]:z-40 opacity-0 text-xs sm:text-sm text-white p-1 px-2 rounded bg-black font-semibold truncate">
+                Last checked at{" "}
+                {formatEpochDate(savedData.currentWeatherCheckTime).time12} on{" "}
+                {formatEpochDate(savedData.currentWeatherCheckTime).day +
+                  " " +
+                  formatEpochDate(savedData.currentWeatherCheckTime).month +
+                  " " +
+                  formatEpochDate(savedData.currentWeatherCheckTime).year}
+              </span>
+            </div>
+          )}
         </div>
-      )}
+        <button
+          type="button"
+          onClick={() => fetchWeatherData(locationKey, true)}
+          className={`p-1 px-2 z-30 sm:hover:bg-goodpurple focus:bg-goodpurple border-2 border-black bg-white text-sm flex gap-1 items-center justify-center w-24 rounded-md shadow-darkSmall ${
+            loading ? "pointer-events-none !bg-white" : ""
+          }`}
+          disabled={loading}
+        >
+          {loading ? (
+            <Loader className="h-[20px]" />
+          ) : (
+            <>
+              Refresh <RotateCcwIcon size={14} strokeWidth={3} />
+            </>
+          )}
+        </button>
+      </h1>
       {error && (
         <div className="bg-goodred text-white rounded-lg flex-col shadow-dark-down p-3 font-medium border-2 border-black mb-4 flex justify-between gap-2 animate__animated animate__headShake">
           <span>Uh oh! Something went wrong...</span>
           <span className="text-xl">{error}</span>
+          <span className="text-sm">Out of API calls. Try demo mode.</span>
         </div>
       )}
       {weatherData && (
-        <div className="flex flex-col font-semibold text-sm min-w-[300px] bg-white border-2 border-black rounded-xl shadow-dark mb-10 overflow-hidden">
+        <div className="flex flex-col font-semibold text-sm min-w-[300px] bg-white border-2 border-black rounded-xl shadow-dark-down mb-10 overflow-hidden animate__animated animate__bounceInLeft">
           <div className="border-b-2 border-black p-2 w-full flex justify-between text-lg items-center gap-2 flex-wrap">
             <span className="flex gap-1 items-center">
               <Clock8Icon size={16} strokeWidth={3} />
@@ -175,7 +235,11 @@ const PrecipitationBlock = ({ precipitationType }) => {
       <div className="flex gap-2">
         {weatherIconPairs.day[capitalizeEachWord(precipitationType)].map(
           (Icon, iconIndex) => (
-            <Icon size={30} key={iconIndex} className="inline-block w-8 h-8" />
+            <Icon
+              size={30}
+              key={iconIndex}
+              className="inline-block w-10 h-10"
+            />
           )
         )}
       </div>
@@ -194,7 +258,7 @@ const WeatherBlock = ({ weather, dayNight, className = "" }) => {
               <Icon
                 size={30}
                 key={iconIndex}
-                className="inline-block w-8 h-8"
+                className="inline-block w-10 h-10"
               />
             )
           )}

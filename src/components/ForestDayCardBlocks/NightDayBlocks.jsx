@@ -21,7 +21,7 @@ export const NightBlock = ({ weather, rainChance = 0, className = "" }) => {
                 <Icon
                   size={30}
                   key={iconIndex}
-                  className="inline-block w-8 h-8"
+                  className="inline-block w-10 h-10"
                 />
               )
             )}
@@ -55,7 +55,7 @@ export const DayBlock = ({ weather, rainChance = 0, className = "" }) => {
                 <Icon
                   size={30}
                   key={iconIndex}
-                  className="inline-block w-8 h-8"
+                  className="inline-block w-10 h-10"
                 />
               )
             )}

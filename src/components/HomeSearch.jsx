@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { FrownIcon } from "lucide-react";
-import { placeholderCities as cities } from "../../dummyData";
+import { placeholderCities as cities, citySearchData } from "../../dummyData";
 import Loader from "./Loader";
 import {
   REACT_APP_WEATHER_API_KEY,
@@ -8,8 +8,10 @@ import {
   REACT_APP_MIN_LENGTH_FOR_SEARCH,
 } from "../../credentials";
 import useLocalStorage from "../localStorageHook";
+import { useMode } from "../ModeProvider";
 export default function HomeSearch() {
   const [placeholder, setPlaceholder] = useState(cities[0]);
+  const { mode } = useMode();
   const usedCitiesRef = useRef([]);
   useEffect(() => {
     const updatePlaceholder = () => {
@@ -62,9 +64,13 @@ export default function HomeSearch() {
     }
 
     try {
+      if (mode === "testing") {
+        setCityData(removeDuplicateResults(citySearchData));
+        cache.set(city, removeDuplicateResults(citySearchData));
+        return;
+      }
       const apiKey = REACT_APP_WEATHER_API_KEY;
       const citySearchUrl = `${REACT_APP_CITY_SEARCH_URL}?apikey=${apiKey}&q=${city}`;
-
       const response = await fetch(citySearchUrl);
       if (!response.ok) {
         if (response.status === 503) {
@@ -107,18 +113,18 @@ export default function HomeSearch() {
   };
 
   return (
-    <div className="text-black font-medium text-center flex flex-col gap-10 justify-center items-center mb-40">
+    <div className="text-black font-medium text-center flex flex-col gap-10 justify-center items-center mb-52 sm:mb-40">
       <h1
-        className="font-semibold text-black text-[3.5rem] tracking-tight [text-shadow:_2px_3px_0_rgb(255_255_255_/_80%)] animate__animated animate__bounceInDown"
+        className="font-bold text-black text-[3.75rem] tracking-tight [text-shadow:_3px_3px_0_#EEE] animate__animated animate__bounceInDown"
         style={{ animation: "shadows 1.2s ease-in infinite;" }}
       >
         What&apos;s the Weather ?
       </h1>
-      <div className="relative flex flex-col justify-start items-center w-full  animate__animated animate__bounceInUp">
+      <div className="relative flex flex-col justify-start items-center animate__animated animate__bounceInUp">
         <div className="w-7 z-10 font-semibold border-2 border-black uppercase inline-flex items-center justify-center aspect-square rounded-b-none border-b-0 rounded-t-md bg-white">
           in
         </div>
-        <div className="relative w-[clamp(300px,90dvw,600px)]  flex items-center justify-center flex-col z-50">
+        <div className="relative w-[clamp(300px,85dvw,600px)] flex items-center justify-center flex-col z-50">
           <input
             type="text"
             placeholder={placeholder}
@@ -163,6 +169,7 @@ const SearchResults = ({ error, cityData }) => {
         <span className="flex-1 text-white text-center items-center flex w-full justify-center flex-col gap-2">
           Uh oh! Something went wrong
           <span className="text-lg">{error}</span>
+          <span className="text-sm">Out of API calls. Try demo mode.</span>
         </span>
       </div>
     );

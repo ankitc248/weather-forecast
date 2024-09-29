@@ -1,5 +1,6 @@
 export function formatEpochDate(epochDate) {
-  const date = new Date(epochDate * 1000);
+  const isMilliseconds = epochDate.toString().length === 13;
+  const date = new Date(isMilliseconds ? epochDate : epochDate * 1000);
   const dayOfWeek = date.toLocaleDateString(undefined, { weekday: "long" });
   const day = date.toLocaleDateString(undefined, { day: "numeric" });
   const month = date.toLocaleDateString(undefined, { month: "long" });
