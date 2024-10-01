@@ -26,12 +26,13 @@ export default function CurrentCondition({ locationKey }) {
   ); // To store API results
   const [error, setError] = useState(null); // To store errors
   const [loading, setLoading] = useState(true); // Loading state
+  const [refreshLoading, setRefreshLoading] = useState(false);
+
   const fetchWeatherData = async (locationKey, refresh = false) => {
     setLoading(true);
     setError(null);
-    setSavedData({ ...savedData, currentWeatherCheckTime: Date.now() });
     if (!refresh) {
-      if (savedData.fiveDayForecast) {
+      if (savedData.currentWeather) {
         setTimeout(() => {
           setWeatherData(savedData.currentWeather);
           setLoading(false);
@@ -39,6 +40,7 @@ export default function CurrentCondition({ locationKey }) {
         return;
       }
     }
+    setSavedData({ ...savedData, currentWeatherCheckTime: Date.now() });
     if (mode === "testing") {
       setTimeout(() => {
         setWeatherData(currentData[0]);
@@ -48,6 +50,7 @@ export default function CurrentCondition({ locationKey }) {
           currentWeatherCheckTime: Date.now(),
         });
         setLoading(false);
+        setRefreshLoading(false);
       }, 2000);
       return;
     }
@@ -72,6 +75,7 @@ export default function CurrentCondition({ locationKey }) {
       setError(error.message);
     } finally {
       setLoading(false);
+      setRefreshLoading(false);
     }
   };
 
@@ -81,9 +85,9 @@ export default function CurrentCondition({ locationKey }) {
 
   return (
     <div className="text-black xl:self-start font-medium flex flex-1 flex-col text-left xl:sticky xl:top-2 md:w-auto min-w-[300px]">
-      <h1 className="text-2xl font-semibold mb-2 animate__animated animate__bounceInLeft flex gap-2 justify-between items-end relative">
+      <h1 className="text-3xl font-bold mb-2 animate__animated animate__bounceInLeft flex gap-2 justify-between items-end relative">
         <div className="flex gap-1 items-center">
-          <span>Current weather</span>
+          <span className="tracking-tight">Current weather</span>
           {savedData.currentWeatherCheckTime && (
             <div className="relative hidden xl:flex items-center">
               <span className="rounded-full z-20 select-none peer font-black border-[2px] shadow-darkSmall border-black w-5 h-5 bg-white text-sm flex items-center justify-center cursor-pointer">
@@ -103,8 +107,11 @@ export default function CurrentCondition({ locationKey }) {
         </div>
         <button
           type="button"
-          onClick={() => fetchWeatherData(locationKey, true)}
-          className={`p-1 px-2 z-30 sm:hover:bg-goodpurple focus:bg-goodpurple border-2 border-black bg-white text-sm flex gap-1 items-center justify-center w-24 rounded-md shadow-darkSmall ${
+          onClick={() => {
+            fetchWeatherData(locationKey, true);
+            setRefreshLoading(true);
+          }}
+          className={`p-1 font-semibold px-2 z-30 sm:hover:bg-goodpurple focus:bg-goodpurple border-2 border-black bg-white text-sm flex gap-1 items-center justify-center w-24 rounded-md shadow-darkSmall ${
             loading ? "pointer-events-none !bg-white" : ""
           }`}
           disabled={loading}
@@ -123,6 +130,14 @@ export default function CurrentCondition({ locationKey }) {
           <span>Uh oh! Something went wrong...</span>
           <span className="text-xl">{error}</span>
           <span className="text-sm">Out of API calls. Try demo mode.</span>
+        </div>
+      )}
+      {refreshLoading && (
+        <div
+          className="bg-white rounded-lg flex-col font-semibold shadow-dark-down p-3 border-2 border-black mb-4 flex justify-between gap-2 animate__animated animate__slideInUp"
+          style={{ animationDuration: "0.2s" }}
+        >
+          <span>Getting current weather...</span>
         </div>
       )}
       {weatherData && (
@@ -230,8 +245,10 @@ export default function CurrentCondition({ locationKey }) {
 
 const PrecipitationBlock = ({ precipitationType }) => {
   return (
-    <div className="flex justify-between gap-4 flex-wrap items-center p-1">
-      <span className="text-center truncate text-xl">{precipitationType}</span>
+    <div className="flex justify-between gap-4 flex-wrap items-center p-1 px-0">
+      <span className="text-center truncate text-2xl tracking-tight">
+        {precipitationType}
+      </span>
       <div className="flex gap-2">
         {weatherIconPairs.day[capitalizeEachWord(precipitationType)].map(
           (Icon, iconIndex) => (
@@ -249,8 +266,10 @@ const PrecipitationBlock = ({ precipitationType }) => {
 
 const WeatherBlock = ({ weather, dayNight, className = "" }) => {
   return (
-    <div className="flex gap-4 flex-wrap justify-between items-center p-1">
-      <span className="text-center truncat text-2xl">{weather}</span>
+    <div className="flex gap-4 flex-wrap justify-between items-center p-1 px-0">
+      <span className="text-center truncat text-3xl tracking-tight">
+        {weather}
+      </span>
       <div className="flex gap-2">
         {weatherIconPairs[dayNight][capitalizeEachWord(weather)] &&
           weatherIconPairs[dayNight][capitalizeEachWord(weather)].map(

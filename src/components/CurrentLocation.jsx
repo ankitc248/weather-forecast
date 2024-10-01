@@ -1,8 +1,13 @@
 import { MapPinIcon, ChevronsUpDownIcon } from "lucide-react";
 import { useState } from "react";
+import useLocalStorage from "../localStorageHook";
 export default function CurrentLocation({ savedData, setSavedData }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [cityChanged, setCityChanged] = useState(false);
+  const [fiveDaySavedData, setFiveDaySavedData] = useLocalStorage(
+    "wtw-saved-data-248-fiveday",
+    {}
+  );
   if (savedData.defaultCity === undefined) return null;
   const handleChangeCity = () => {
     setCityChanged(true);
@@ -12,8 +17,13 @@ export default function CurrentLocation({ savedData, setSavedData }) {
         ...savedData,
         defaultCity: undefined,
         currentWeather: undefined,
-        fiveDayForecast: undefined,
         changingCity: undefined,
+        currentWeatherCheckTime: undefined,
+      });
+      setFiveDaySavedData({
+        ...fiveDaySavedData,
+        fiveDayForecast: undefined,
+        fiveDayForecastCheckTime: undefined,
       });
     }, 2000);
   };
@@ -21,7 +31,7 @@ export default function CurrentLocation({ savedData, setSavedData }) {
     <div className="relative flex items-center">
       <div
         className={`flex border-2 min-w-[300px] shdaow-dark border-black rounded-md shadow-dark text-black bg-white font-semibold overflow-hidden w-full sm:w-auto animate__animated ${
-          cityChanged ? "animate__hinge" : "animate__bounceIn"
+          cityChanged ? "animate__hinge" : "animate__bounceInDown"
         }`}
       >
         <div className="border-r-2 border-black p-1 flex items-center">
@@ -52,7 +62,7 @@ export default function CurrentLocation({ savedData, setSavedData }) {
         </button>
       </div>
       {showTooltip && !cityChanged && (
-        <span className="absolute left-[102%] hidden sm:flex whitespace-nowrap shadow-darkSmall bg-goodred rounded-md border-2 border-black p-1 px-2 text-sm font-semibold animate-swipeup">
+        <span className="absolute left-[104%] hidden sm:flex whitespace-nowrap shadow-darkSmall bg-goodred rounded-md border-2 border-black p-1 px-2 text-sm font-semibold animate-swipeup">
           Change city
         </span>
       )}

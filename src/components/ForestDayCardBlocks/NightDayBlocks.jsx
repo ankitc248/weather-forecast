@@ -8,7 +8,7 @@ export const NightBlock = ({ weather, rainChance = 0, className = "" }) => {
         className
       }
     >
-      <span className="flex items-center justify-center gap-1 text-xs border-b-2 border-black pb-1 ">
+      <span className="flex items-center justify-center gap-1 text-xs border-b bg-black text-white py-0.5 ">
         {/* <MoonIcon size={14} strokeWidth={3} /> */}
         Night
       </span>
@@ -42,7 +42,7 @@ export const DayBlock = ({ weather, rainChance = 0, className = "" }) => {
         className
       }
     >
-      <span className="flex items-center justify-center gap-1 text-xs border-b-2 border-black pb-1">
+      <span className="flex items-center justify-center gap-1 text-xs py-0.5 bg-black/10">
         {/* <SunIcon size={16} strokeWidth={3} /> */}
         Day
       </span>

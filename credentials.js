@@ -1,4 +1,4 @@
-export const REACT_APP_WEATHER_API_KEY = "G1IYXZ3LGs5WX8mNno8FZkjqvANHbjk";
+export const REACT_APP_WEATHER_API_KEY = "G1IYXZ3LGs5WX8mNno8FZkjqvANHbjkw";
 export const REACT_APP_CITY_SEARCH_URL =
   "http://dataservice.accuweather.com/locations/v1/cities/search";
 export const REACT_APP_FIVE_DAY_FORECAST_URL =

@@ -56,6 +56,14 @@ export default function HomeSearch() {
     setLoading(true);
     setError(null);
     setSearched(true);
+    if (mode === "testing") {
+      setTimeout(() => {
+        setCityData(removeDuplicateResults(citySearchData));
+        cache.set(city, removeDuplicateResults(citySearchData));
+        setLoading(false);
+      }, 1000);
+      return;
+    }
     // Check if the result is cached
     if (cache.has(city)) {
       setCityData(cache.get(city));
@@ -64,11 +72,6 @@ export default function HomeSearch() {
     }
 
     try {
-      if (mode === "testing") {
-        setCityData(removeDuplicateResults(citySearchData));
-        cache.set(city, removeDuplicateResults(citySearchData));
-        return;
-      }
       const apiKey = REACT_APP_WEATHER_API_KEY;
       const citySearchUrl = `${REACT_APP_CITY_SEARCH_URL}?apikey=${apiKey}&q=${city}`;
       const response = await fetch(citySearchUrl);
@@ -112,15 +115,18 @@ export default function HomeSearch() {
     }
   };
 
+  const [inputFocused, setInputFocused] = useState(false);
+
   return (
-    <div className="text-black font-medium text-center flex flex-col gap-10 justify-center items-center mb-52 sm:mb-40">
+    <div className="text-black font-medium text-center flex flex-col justify-center gap-10 items-center mb-52 sm:mb-40">
       <h1
-        className="font-bold text-black text-[3.75rem] tracking-tight [text-shadow:_3px_3px_0_#EEE] animate__animated animate__bounceInDown"
-        style={{ animation: "shadows 1.2s ease-in infinite;" }}
+        className={`font-bold text-black transition-all text-[3.75rem] tracking-tight text-shadow-3d animate__animated animate__bounceInDown`}
       >
         What&apos;s the Weather ?
       </h1>
-      <div className="relative flex flex-col justify-start items-center animate__animated animate__bounceInUp">
+      <div
+        className={`relative flex flex-col transition-transform justify-start items-center animate__animated animate__bounceInUp`}
+      >
         <div className="w-7 z-10 font-semibold border-2 border-black uppercase inline-flex items-center justify-center aspect-square rounded-b-none border-b-0 rounded-t-md bg-white">
           in
         </div>
@@ -130,6 +136,8 @@ export default function HomeSearch() {
             placeholder={placeholder}
             value={searchTerm}
             onChange={handleInputChange}
+            onFocus={() => setInputFocused(true)}
+            onBlur={() => setInputFocused(false)}
             className={
               "transition-all p-4 w-full h-14 text-lg rounded-xl bg-white border-2 border-black outline-none text-center font-medium shadow-dark" +
               (searched ? " rounded-b-none" : "")

@@ -12,17 +12,20 @@ import { RotateCcwIcon } from "lucide-react";
 import { formatEpochDate } from "../helpers/helpers";
 export default function ForecastResults({ locationKey }) {
   const mode = useMode().mode;
-  const [savedData, setSavedData] = useLocalStorage("wtw-saved-data-248", {});
+  const [savedData, setSavedData] = useLocalStorage(
+    "wtw-saved-data-248-fiveday",
+    {}
+  );
   const [forecastData, setForecastData] = useState(
     savedData.fiveDayForecast ? savedData.fiveDayForecast : null
   ); // To store API results
   const [error, setError] = useState(null); // To store errors
   const [loading, setLoading] = useState(mode !== "testing"); // Loading state
+  const [refreshLoading, setRefreshLoading] = useState(false);
 
   const fetchForecastData = async (locationKey, refresh = false) => {
     setLoading(true);
     setError(null);
-    setSavedData({ ...savedData, fiveDayForecastCheckTime: Date.now() });
     if (!refresh) {
       if (savedData.fiveDayForecast) {
         setTimeout(() => {
@@ -32,6 +35,7 @@ export default function ForecastResults({ locationKey }) {
         return;
       }
     }
+    setSavedData({ ...savedData, fiveDayForecastCheckTime: Date.now() });
     // setForecastData(null);
     if (mode === "testing") {
       setTimeout(() => {
@@ -42,6 +46,7 @@ export default function ForecastResults({ locationKey }) {
           fiveDayForecastCheckTime: Date.now(),
         });
         setLoading(false);
+        setRefreshLoading(false);
       }, 2000);
       return;
     }
@@ -67,6 +72,7 @@ export default function ForecastResults({ locationKey }) {
       setError(error.message);
     } finally {
       setLoading(false);
+      setRefreshLoading(false);
     }
   };
 
@@ -76,10 +82,9 @@ export default function ForecastResults({ locationKey }) {
 
   return (
     <div className="text-black font-medium flex-1 min-w-[300px]">
-      <h1 className="text-2xl font-semibold mb-2 animate__animated animate__bounceInUp flex gap-2 justify-between items-end">
+      <h1 className="text-2xl font-bold mb-2 mt-1 animate__animated animate__bounceInUp flex gap-2 justify-between items-end">
         <div className="flex gap-1 items-center">
-          <span>5 Day Forecast</span>
-
+          <span className="tracking-tight">5 Day Forecast</span>
           {savedData.fiveDayForecastCheckTime && (
             <div className="relative hidden xl:flex items-center">
               <span className="rounded-full z-20 select-none peer font-black border-[2px] shadow-darkSmall border-black w-5 h-5 bg-white text-sm flex items-center justify-center cursor-pointer">
@@ -99,8 +104,11 @@ export default function ForecastResults({ locationKey }) {
         </div>
         <button
           type="button"
-          onClick={() => fetchForecastData(locationKey, true)}
-          className={`p-1 px-2 z-30 sm:hover:bg-goodpurple focus:bg-goodpurple border-2 border-black bg-white text-sm flex gap-1 items-center justify-center w-24 rounded-md shadow-darkSmall ${
+          onClick={() => {
+            fetchForecastData(locationKey, true);
+            setRefreshLoading(true);
+          }}
+          className={`p-1 font-semibold px-2 z-30 sm:hover:bg-goodpurple focus:bg-goodpurple border-2 border-black bg-white text-sm flex gap-1 items-center justify-center w-24 rounded-md shadow-darkSmall ${
             loading ? "pointer-events-none !bg-white" : ""
           }`}
           disabled={loading}
@@ -119,6 +127,14 @@ export default function ForecastResults({ locationKey }) {
           <span>Uh oh! Something went wrong...</span>
           <span className="text-xl">{error}</span>
           <span className="text-sm">Out of API calls. Try demo mode.</span>
+        </div>
+      )}
+      {refreshLoading && (
+        <div
+          className="bg-white rounded-lg flex-col text-left font-semibold shadow-dark-down p-3 border-2 border-black mb-4 flex justify-between gap-2 animate__animated animate__slideInUp"
+          style={{ animationDuration: "0.2s" }}
+        >
+          <span>Getting five day forecast...</span>
         </div>
       )}
       {forecastData && (
