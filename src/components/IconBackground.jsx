@@ -24,21 +24,21 @@ export default function IconBackground({ className = "" }) {
         <Icon
           key={index}
           className="place-self-center w-10 h-10 opacity-10 animate-spin"
-          style={{ animationDuration: "4s", animationDelay: `-1s` }}
+          style={{ animationDuration: "30s", animationDelay: `-${index * 1}s` }}
         />
       ))}
       {shuffledIcons2.map((Icon, index) => (
         <Icon
           key={index}
           className="place-self-center w-10 h-10 opacity-10 animate-spin"
-          style={{ animationDuration: "4s", animationDelay: `0s` }}
+          style={{ animationDuration: "30s", animationDelay: `-${index + 1}s` }}
         />
       ))}
       {shuffledIcons3.map((Icon, index) => (
         <Icon
           key={index}
           className="place-self-center w-10 h-10 opacity-10 animate-spin"
-          style={{ animationDuration: "4s", animationDelay: `-2s` }}
+          style={{ animationDuration: "30s", animationDelay: `-${index * 2}s` }}
         />
       ))}
     </div>

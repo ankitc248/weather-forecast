@@ -8,15 +8,16 @@ import {
   Clock8Icon,
   CalendarFold,
   RotateCcwIcon,
+  XIcon,
 } from "lucide-react";
 import Loader from "./Loader";
 import { useEffect, useState } from "react";
 import { useMode } from "../ModeProvider";
-import {
-  REACT_APP_WEATHER_API_KEY,
-  REACT_APP_CURRENT_CONDITIONS_URL,
-} from "../../credentials";
 import useLocalStorage from "../localStorageHook";
+
+const REACT_APP_WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY || "";
+const REACT_APP_CURRENT_CONDITIONS_URL =
+  import.meta.env.VITE_CURRENT_CONDITIONS_URL || "";
 
 export default function CurrentCondition({ locationKey }) {
   const mode = useMode().mode;
@@ -126,10 +127,17 @@ export default function CurrentCondition({ locationKey }) {
         </button>
       </h1>
       {error && (
-        <div className="bg-goodred text-white rounded-lg flex-col shadow-dark-down p-3 font-medium border-2 border-black mb-4 flex justify-between gap-2 animate__animated animate__headShake">
+        <div className="relative bg-goodred text-white rounded-lg flex-col shadow-dark-down p-3 font-medium border-2 border-black mb-4 flex justify-between gap-2 animate__animated animate__headShake">
           <span>Uh oh! Something went wrong...</span>
           <span className="text-xl">{error}</span>
           <span className="text-sm">Out of API calls. Try demo mode.</span>
+          <button
+            type="button"
+            onClick={() => setError(null)}
+            className={`absolute top-2 right-2 font-semibold z-30 sm:hover:bg-goodpurple focus:bg-goodpurple border-2 border-black text-black bg-white text-sm flex gap-1 items-center justify-center rounded-full shadow-darkSmall aspect-square p-0.5`}
+          >
+            <XIcon size={20} strokeWidth={2.5} />
+          </button>
         </div>
       )}
       {refreshLoading && (

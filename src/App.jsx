@@ -10,7 +10,7 @@ import "animate.css";
 function App() {
   const [savedData, setSavedData] = useLocalStorage("wtw-saved-data-248", {});
   return (
-    <div className="text-black font-medium flex justify-center">
+    <div className="text-black font-medium flex justify-center min-h-dvh">
       <div className="fixed top-4 flex flex-wrap gap-4 z-50 lg:right-4">
         <UnitConverter />
         <ModeConverter />
@@ -19,7 +19,7 @@ function App() {
       {savedData.defaultCity === undefined ? (
         <HomeSearch />
       ) : (
-        <div className="flex flex-col mt-5 min-h-dvh w-[clamp(300px,85dvw,1200px)]">
+        <div className="flex flex-col mt-12 min-h-dvh w-[clamp(300px,90dvw,1200px)]">
           <ResultsHeader savedData={savedData} setSavedData={setSavedData} />
           <div
             className={`flex flex-col lg:flex-row gap-4 mt-5 flex-wrap pb-52 ${

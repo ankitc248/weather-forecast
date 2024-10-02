@@ -2,13 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { FrownIcon } from "lucide-react";
 import { placeholderCities as cities, citySearchData } from "../../dummyData";
 import Loader from "./Loader";
-import {
-  REACT_APP_WEATHER_API_KEY,
-  REACT_APP_CITY_SEARCH_URL,
-  REACT_APP_MIN_LENGTH_FOR_SEARCH,
-} from "../../credentials";
 import useLocalStorage from "../localStorageHook";
 import { useMode } from "../ModeProvider";
+
+const REACT_APP_WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY || "";
+const REACT_APP_CITY_SEARCH_URL = import.meta.env.VITE_CITY_SEARCH_URL || "";
+const REACT_APP_MIN_LENGTH_FOR_SEARCH =
+  import.meta.env.VITE_MIN_LENGTH_FOR_SEARCH || 3;
+
 export default function HomeSearch() {
   const [placeholder, setPlaceholder] = useState(cities[0]);
   const { mode } = useMode();
@@ -111,16 +112,23 @@ export default function HomeSearch() {
     if (e.target.value.length < REACT_APP_MIN_LENGTH_FOR_SEARCH) {
       setCityData(null);
       setSearched(false);
+      setInputFocused(true);
       setDebouncedSearchTerm(""); // Clear city data if input length is less than 3
     }
+    if (!e.target.value.length) setInputFocused(false);
   };
 
   const [inputFocused, setInputFocused] = useState(false);
 
   return (
-    <div className="text-black font-medium text-center flex flex-col justify-center gap-10 items-center mb-52 sm:mb-40">
+    <div
+      // onClick={() => !searchTerm.length && setInputFocused(false)}
+      className={`text-black transition-all font-medium text-center justify-center flex flex-col ${
+        inputFocused ? "mb-[55dvh] sm:mb-40" : "mb-52 sm:mb-40"
+      } gap-10 items-center`}
+    >
       <h1
-        className={`font-bold text-black transition-all text-[3.75rem] tracking-tight text-shadow-3d animate__animated animate__bounceInDown`}
+        className={`font-bold text-black transition-all text-[3.75rem] tracking-tight text-shadow-3d-opp animate__animated animate__bounceInDown`}
       >
         What&apos;s the Weather ?
       </h1>
@@ -137,7 +145,7 @@ export default function HomeSearch() {
             value={searchTerm}
             onChange={handleInputChange}
             onFocus={() => setInputFocused(true)}
-            onBlur={() => setInputFocused(false)}
+            onBlur={() => !searchTerm.length && setInputFocused(false)}
             className={
               "transition-all p-4 w-full h-14 text-lg rounded-xl bg-white border-2 border-black outline-none text-center font-medium shadow-dark" +
               (searched ? " rounded-b-none" : "")

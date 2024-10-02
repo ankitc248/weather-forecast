@@ -44,7 +44,7 @@ h1 {
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 1.5rem;
+  padding-inline: 1rem;
   text-align: center;
 }
 
@@ -63,10 +63,18 @@ h1 {
 
 .text-shadow-3d {
   text-shadow:
-    1px 1px 0px #ffffff,
+    1px 1px 0px #fff,
     2px 2px 0px #fff,
-    3px 3px 0px #ffffff;
+    3px 3px 0px #fff;
 }
+
+.text-shadow-3d-opp {
+  text-shadow:
+    1px -1px 0px #fff,
+    2px -2px 0px #fff,
+    3px -3px 0px #fff;
+}
+
 
 .text-shadow-small {
   text-shadow:
