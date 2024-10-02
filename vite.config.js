@@ -66,6 +66,13 @@ export default defineConfig({
               cacheName: "static-resources",
             },
           },
+          {
+            urlPattern: /\.(?:woff|woff2)$/, // Cache Fonts
+            handler: "StaleWhileRevalidate", // Use cache while updating from the network
+            options: {
+              cacheName: "static-resources",
+            },
+          },
         ],
       },
     }),
