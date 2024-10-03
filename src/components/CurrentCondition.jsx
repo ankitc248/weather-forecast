@@ -14,6 +14,7 @@ import Loader from "./Loader";
 import { useEffect, useState } from "react";
 import { useMode } from "../ModeProvider";
 import useLocalStorage from "../localStorageHook";
+import { sleep } from "../helpers/helpers";
 
 const REACT_APP_WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY || "";
 const REACT_APP_CURRENT_CONDITIONS_URL =
@@ -28,7 +29,7 @@ export default function CurrentCondition({ locationKey }) {
   const [error, setError] = useState(null); // To store errors
   const [loading, setLoading] = useState(true); // Loading state
   const [refreshLoading, setRefreshLoading] = useState(false);
-
+  const [refreshed, setRefreshed] = useState(false);
   const fetchWeatherData = async (locationKey, refresh = false) => {
     setLoading(true);
     setError(null);
@@ -52,11 +53,16 @@ export default function CurrentCondition({ locationKey }) {
         });
         setLoading(false);
         setRefreshLoading(false);
+        setRefreshed(true);
+        setTimeout(() => {
+          setRefreshed(false);
+        }, 1000);
       }, 2000);
       return;
     }
 
     try {
+      await sleep(1000);
       const apiKey = REACT_APP_WEATHER_API_KEY;
       const citySearchUrl = `${REACT_APP_CURRENT_CONDITIONS_URL}/${locationKey}?apikey=${apiKey}&details=true`;
       const init = {
@@ -77,6 +83,10 @@ export default function CurrentCondition({ locationKey }) {
     } finally {
       setLoading(false);
       setRefreshLoading(false);
+      setRefreshed(true);
+      setTimeout(() => {
+        setRefreshed(false);
+      }, 1000);
     }
   };
 
@@ -149,7 +159,12 @@ export default function CurrentCondition({ locationKey }) {
         </div>
       )}
       {weatherData && (
-        <div className="flex flex-col font-semibold text-sm min-w-[300px] bg-white border-2 border-black rounded-xl shadow-dark-down mb-10 overflow-hidden animate__animated animate__bounceInLeft">
+        <div className="relative flex flex-col font-semibold text-sm min-w-[300px] bg-white border-2 border-black rounded-xl shadow-dark-down mb-10 overflow-hidden animate__animated animate__bounceInLeft">
+          <span
+            className={`absolute z-20 bg-black h-full top-0 -left-full w-full ${
+              refreshed ? "animate-loadingSwipe" : ""
+            }`}
+          ></span>
           <div className="border-b-2 border-black p-2 w-full flex justify-between text-lg items-center gap-2 flex-wrap">
             <span className="flex gap-1 items-center">
               <Clock8Icon size={16} strokeWidth={3} />

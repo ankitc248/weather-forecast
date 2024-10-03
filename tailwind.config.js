@@ -29,10 +29,17 @@ export default {
           "0%": { transform: "translateY(20px)", opacity: "0" },
           "100%": { transform: "translateY(0%)", opacity: "1" },
         },
+        loadingSwipe: {
+          "100%": { left: "100%" },
+        },
       },
       animation: {
         updown: "updown 1s ease-in-out infinite",
         swipeup: "swipeUp 0.25s ease forwards",
+        loadingSwipe:
+          "loadingSwipe 0.75s cubic-bezier(0.2, 0.1, 0.2, 1) forwards",
+        loadingSwipeInfinite:
+          "loadingSwipe 1s cubic-bezier(0.2, 0.1, 0.2, 1) infinite",
       },
     },
   },

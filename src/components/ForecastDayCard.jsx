@@ -3,13 +3,22 @@ import QualityBlock from "./ForestDayCardBlocks/QualityBlock";
 import SunBlock from "./ForestDayCardBlocks/SunBlock";
 import { formatEpochDate } from "../helpers/helpers";
 import { DayBlock, NightBlock } from "./ForestDayCardBlocks/NightDayBlocks";
-export default function ForecastDayCard({ forecastDataDay, delay = 0 }) {
+export default function ForecastDayCard({
+  forecastDataDay,
+  delay = 0,
+  refreshed = false,
+}) {
   const currentDateDetails = formatEpochDate(forecastDataDay.EpochDate);
   return (
     <div
-      className="bg-white font-semibold items-center animate__animated animate__bounceInUp shadow-dark-down border-2 min-w-[300px] border-black rounded-xl flex flex-col p-3 pt-2 gap-3"
+      className="bg-white overflow-hidden font-semibold items-center animate__animated animate__bounceInUp shadow-dark-down border-2 min-w-[300px] border-black rounded-xl flex flex-col p-3 pt-2 gap-3"
       style={{ animationDelay: `${delay}s` }}
     >
+      <span
+        className={`absolute z-20 bg-black h-full top-0 -left-full w-full ${
+          refreshed ? "animate-loadingSwipe" : ""
+        }`}
+      ></span>
       <div className="text-left w-full p-1 flex flex-col justify-between items-start flex-wrap">
         <p className="text-xl">
           {currentDateDetails.dayOfWeek}{" "}

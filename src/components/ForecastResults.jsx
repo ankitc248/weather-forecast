@@ -6,6 +6,7 @@ import useLocalStorage from "../localStorageHook";
 import { useMode } from "../ModeProvider";
 import { RotateCcwIcon, XIcon } from "lucide-react";
 import { formatEpochDate } from "../helpers/helpers";
+import { sleep } from "../helpers/helpers";
 
 const REACT_APP_WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY || "";
 const REACT_APP_FIVE_DAY_FORECAST_URL =
@@ -22,6 +23,7 @@ export default function ForecastResults({ locationKey }) {
   const [error, setError] = useState(null); // To store errors
   const [loading, setLoading] = useState(mode !== "testing"); // Loading state
   const [refreshLoading, setRefreshLoading] = useState(false);
+  const [refreshed, setRefreshed] = useState(false);
 
   const fetchForecastData = async (locationKey, refresh = false) => {
     setLoading(true);
@@ -47,11 +49,16 @@ export default function ForecastResults({ locationKey }) {
         });
         setLoading(false);
         setRefreshLoading(false);
+        setRefreshed(true);
+        setTimeout(() => {
+          setRefreshed(false);
+        }, 1000);
       }, 2000);
       return;
     }
 
     try {
+      await sleep(1000);
       const apiKey = REACT_APP_WEATHER_API_KEY;
       const citySearchUrl = `${REACT_APP_FIVE_DAY_FORECAST_URL}/${locationKey}?apikey=${apiKey}&details=true`;
 
@@ -73,6 +80,10 @@ export default function ForecastResults({ locationKey }) {
     } finally {
       setLoading(false);
       setRefreshLoading(false);
+      setRefreshed(true);
+      setTimeout(() => {
+        setRefreshed(false);
+      }, 1000);
     }
   };
 
@@ -151,6 +162,7 @@ export default function ForecastResults({ locationKey }) {
               forecastDataDay={forecastDataDay}
               key={index}
               delay={(index + 1) * 0.25}
+              refreshed={refreshed}
             />
           ))}
         </div>

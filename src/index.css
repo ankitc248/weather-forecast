@@ -142,3 +142,9 @@ h1 {
     text-shadow: none;
   }
 }
+
+@keyframes loading-swipe {
+  100% {
+    left: 100%;
+  }
+}

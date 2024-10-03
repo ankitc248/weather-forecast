@@ -34,3 +34,7 @@ export function capitalizeEachWord(str) {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+export async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
