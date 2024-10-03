@@ -98,7 +98,9 @@ export default function CurrentCondition({ locationKey }) {
     <div className="text-black xl:self-start font-medium flex flex-1 flex-col text-left xl:sticky xl:top-2 md:w-auto min-w-[300px]">
       <h1 className="text-3xl font-bold mb-2 animate__animated animate__bounceInLeft flex gap-2 justify-between items-end relative">
         <div className="flex gap-1 items-center">
-          <span className="tracking-tight">Current weather</span>
+          <span className="tracking-tight text-shadow-3d-opp-small">
+            Current weather
+          </span>
           {savedData.currentWeatherCheckTime && (
             <div className="relative hidden xl:flex items-center">
               <span className="rounded-full z-20 select-none peer font-black border-[2px] shadow-darkSmall border-black w-5 h-5 bg-white text-sm flex items-center justify-center cursor-pointer">

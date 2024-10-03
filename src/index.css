@@ -75,6 +75,11 @@ h1 {
     3px -3px 0px #fff;
 }
 
+.text-shadow-3d-opp-small {
+  text-shadow:
+    1px -1px 0px #fff;
+}
+
 
 .text-shadow-small {
   text-shadow:

@@ -95,7 +95,9 @@ export default function ForecastResults({ locationKey }) {
     <div className="text-black font-medium flex-1 min-w-[300px]">
       <h1 className="text-2xl font-bold mb-2 mt-1 animate__animated animate__bounceInUp flex gap-2 justify-between items-end">
         <div className="flex gap-1 items-center">
-          <span className="tracking-tight">5 Day Forecast</span>
+          <span className="tracking-tight text-shadow-3d-opp-small ">
+            5 Day Forecast
+          </span>
           {savedData.fiveDayForecastCheckTime && (
             <div className="relative hidden xl:flex items-center">
               <span className="rounded-full z-20 select-none peer font-black border-[2px] shadow-darkSmall border-black w-5 h-5 bg-white text-sm flex items-center justify-center cursor-pointer">
